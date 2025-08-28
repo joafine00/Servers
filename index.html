@@ -3,27 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <title>🌍 Top Servidores de Minecraft</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    /* === Estilo base === */
     body {
-      font-family: Arial, sans-serif;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
       background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
       color: #fff;
-      text-align: center;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    h1, h2, p { text-align: center; }
+
+    /* === Container principal === */
+    .container {
+      width: 100%;
+      max-width: 900px;
       padding: 20px;
     }
-    h1 {
-      font-size: 2.5em;
-      margin-bottom: 10px;
-      animation: fadeInDown 1s ease;
+
+    /* === Login modal === */
+    #loginBox {
+      background: rgba(0,0,0,0.8);
+      padding: 25px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 350px;
+      text-align: center;
+      animation: fadeInDown 0.8s ease;
     }
-    p {
-      margin-bottom: 20px;
-      color: #ccc;
-      animation: fadeIn 1.5s ease;
+    #loginBox input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
     }
+    #loginBox button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      background: #ff9800;
+      color: #fff;
+      font-size: 1em;
+    }
+    #loginBox button:hover { background: #e68900; }
+
+    /* === Área do site após login === */
+    #site {
+      display: none;
+      animation: fadeIn 1s ease;
+    }
+
     .filter {
-      margin-bottom: 20px;
-      animation: fadeIn 2s ease;
+      margin: 20px auto;
+      text-align: center;
     }
     select {
       padding: 10px;
@@ -33,6 +75,7 @@
       outline: none;
       cursor: pointer;
     }
+
     .server-list {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -52,100 +95,40 @@
       transform: translateY(0);
       opacity: 1;
     }
-    .server-name {
-      font-size: 1.4em;
-      margin-bottom: 10px;
-      font-weight: bold;
-    }
-    .server-ip {
-      font-family: monospace;
-      font-size: 1.1em;
-      color: #ffd700;
-    }
-    .server-info {
-      margin-top: 8px;
-      font-size: 0.9em;
-      color: #ddd;
-    }
-    /* Login modal */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7);
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      background: #2c3e50;
-      padding: 30px;
-      border-radius: 15px;
-      width: 300px;
-      text-align: left;
-      animation: fadeInUp 0.6s ease;
-    }
-    .modal-content h2 {
-      margin-bottom: 15px;
-    }
-    .modal-content input {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 8px;
-      border: none;
-    }
-    .modal-content button {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 8px;
-      margin-top: 10px;
-      cursor: pointer;
-      font-weight: bold;
-      background: #ff9800;
-      color: #fff;
-    }
-    .modal-content button:hover {
-      background: #e68900;
-    }
-    /* Animações */
+    .server-name { font-size: 1.4em; font-weight: bold; }
+    .server-ip { font-family: monospace; color: #ffd700; }
+    .server-info { font-size: 0.9em; color: #ddd; margin-top: 6px; }
+
+    /* === Animações === */
     @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
     @keyframes fadeInDown { from {opacity:0; transform:translateY(-20px);} to {opacity:1; transform:translateY(0);} }
-    @keyframes fadeInUp { from {opacity:0; transform:translateY(30px);} to {opacity:1; transform:translateY(0);} }
   </style>
 </head>
 <body>
-  <h1>🌍 Top Servidores Globais de Minecraft</h1>
-  <p>Encontre os melhores servidores para jogar com seus amigos!</p>
-
-  <!-- Botão login -->
-  <button onclick="abrirLogin()">🔑 Login</button>
-
-  <!-- Filtro Java/Bedrock -->
-  <div class="filter">
-    <label for="tipo">Escolha a edição:</label>
-    <select id="tipo" onchange="filtrarServidores()">
-      <option value="java" selected>💻 Minecraft Java</option>
-      <option value="bedrock">📱 Minecraft Bedrock</option>
-    </select>
+  <!-- Tela de Login -->
+  <div id="loginBox">
+    <h2>🔑 Login</h2>
+    <input type="text" id="user" placeholder="Usuário">
+    <input type="password" id="pass" placeholder="Senha">
+    <label><input type="checkbox" id="captcha"> Não sou um robô 🤖</label>
+    <button onclick="fazerLogin()">Entrar</button>
   </div>
 
-  <div class="server-list" id="info"></div>
+  <!-- Conteúdo do site -->
+  <div id="site" class="container">
+    <h1>🌍 Top Servidores Globais de Minecraft</h1>
+    <p>Encontre os melhores servidores para jogar com seus amigos!</p>
 
-  <!-- Modal de Login -->
-  <div id="loginModal" class="modal">
-    <div class="modal-content">
-      <h2>🔑 Login</h2>
-      <input type="text" id="user" placeholder="Usuário">
-      <input type="password" id="pass" placeholder="Senha">
-      
-      <!-- Fake anti-CAPTCHA -->
-      <label><input type="checkbox" id="captcha"> Não sou um robô 🤖</label>
-      
-      <button onclick="fazerLogin()">Entrar</button>
-      <button onclick="fecharLogin()">Cancelar</button>
+    <!-- Filtro -->
+    <div class="filter">
+      <label for="tipo">Escolha a edição:</label>
+      <select id="tipo" onchange="filtrarServidores()">
+        <option value="java" selected>💻 Minecraft Java</option>
+        <option value="bedrock">📱 Minecraft Bedrock</option>
+      </select>
     </div>
+
+    <div class="server-list" id="info"></div>
   </div>
 
   <script>
@@ -154,11 +137,47 @@
       { nome: "UniversoCraft", ip: "mc.universocraft.com", tipo: "java", versao: "1.8 - 1.19", modos: "SkyWars, EggWars, PvP" },
       { nome: "MineLand", ip: "play.mineland.net", tipo: "java", versao: "1.8 - 1.20", modos: "Creative, Survival, Minigames" },
       { nome: "CubeCraft (Java)", ip: "play.cubecraft.net", tipo: "java", versao: "1.8 - 1.19", modos: "EggWars, SkyWars, Lucky Islands" },
-      { nome: "CubeCraft (Bedrock)", ip: "Disponível em servidores oficiais", tipo: "bedrock", versao: "Bedrock 1.19+", modos: "SkyWars, EggWars" },
+      { nome: "CubeCraft (Bedrock)", ip: "Na lista oficial do jogo", tipo: "bedrock", versao: "Bedrock 1.19+", modos: "SkyWars, EggWars" },
       { nome: "ManaCube", ip: "play.manacube.com", tipo: "java", versao: "1.8 - 1.20", modos: "Parkour, Survival, Skyblock" },
-      { nome: "Lifeboat", ip: "Disponível em servidores oficiais", tipo: "bedrock", versao: "Bedrock 1.19+", modos: "Survival Games, BedWars" }
+      { nome: "Lifeboat", ip: "Na lista oficial do jogo", tipo: "bedrock", versao: "Bedrock 1.19+", modos: "Survival Games, BedWars" }
     ];
 
+    // === LOGIN ===
+    function fazerLogin() {
+      const user = document.getElementById("user").value;
+      const pass = document.getElementById("pass").value;
+      const captcha = document.getElementById("captcha").checked;
+
+      if (!user || !pass) {
+        alert("⚠️ Preencha todos os campos!");
+        return;
+      }
+      if (!captcha) {
+        alert("⚠️ Confirme que não é um robô!");
+        return;
+      }
+
+      // Salva login no localStorage
+      localStorage.setItem("usuarioLogado", user);
+
+      abrirSite(user);
+    }
+
+    function abrirSite(user) {
+      document.getElementById("loginBox").style.display = "none";
+      document.getElementById("site").style.display = "block";
+      carregarServidores("java");
+    }
+
+    // Checa se já está logado
+    window.onload = () => {
+      const usuarioSalvo = localStorage.getItem("usuarioLogado");
+      if (usuarioSalvo) {
+        abrirSite(usuarioSalvo);
+      }
+    };
+
+    // === SERVIDORES ===
     function carregarServidores(tipo = "java") {
       const container = document.getElementById("info");
       container.innerHTML = "";
@@ -179,8 +198,6 @@
           <div class="server-info">🔥 Modos: ${srv.modos}</div>
         `;
         container.appendChild(card);
-
-        // Delay para animação em cascata
         setTimeout(() => card.classList.add("show"), 150 * i);
       });
     }
@@ -189,33 +206,6 @@
       const tipoSelecionado = document.getElementById("tipo").value;
       carregarServidores(tipoSelecionado);
     }
-
-    // Login
-    function abrirLogin() {
-      document.getElementById("loginModal").style.display = "flex";
-    }
-    function fecharLogin() {
-      document.getElementById("loginModal").style.display = "none";
-    }
-    function fazerLogin() {
-      const user = document.getElementById("user").value;
-      const pass = document.getElementById("pass").value;
-      const captcha = document.getElementById("captcha").checked;
-
-      if (!user || !pass) {
-        alert("⚠️ Preencha todos os campos!");
-        return;
-      }
-      if (!captcha) {
-        alert("⚠️ Confirme que não é um robô!");
-        return;
-      }
-      alert("✅ Login bem-sucedido! Bem-vindo, " + user + "!");
-      fecharLogin();
-    }
-
-    // Inicial
-    carregarServidores("java");
   </script>
 </body>
 </html>
